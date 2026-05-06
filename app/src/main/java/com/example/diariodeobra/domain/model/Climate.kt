@@ -4,5 +4,5 @@ enum class Climate {
     SUNNY,
     CLOUDY,
     RAINY,
-    STORMY
+    STORMY,
 }

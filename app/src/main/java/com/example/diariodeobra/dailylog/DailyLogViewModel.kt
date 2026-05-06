@@ -11,6 +11,7 @@ class DailyLogViewModel(): ViewModel() {
 
     fun onIntent(intent: DailyLogIntent) {
 
+
     }
 
     private fun finalize() {
