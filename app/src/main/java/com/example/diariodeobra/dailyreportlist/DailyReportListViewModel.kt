@@ -19,7 +19,6 @@ class DailyReportListViewModel(
     fun dispath(intent: DailyReportListIntent){
         when(intent){
             is DailyReportListIntent.LoadList -> loadList()
-            is DailyReportListIntent.ToggleCreateReportModal -> toogleModal()
         }
     }
 
@@ -47,10 +46,6 @@ class DailyReportListViewModel(
                 list = list
             )
         }
-    }
-
-    private fun toogleModal() {
-        _state.update { it.copy(showCreateReportModal = !it.showCreateReportModal) }
     }
 
 }

@@ -13,7 +13,7 @@ data class DailyReportWithPhotos(
         parentColumn = "id",
         entityColumn = "reportId"
     )
-    val photos: List<PhotoEntity>
+    val medias: List<MediaEntity>
 ) {
     fun toDomain(): DailyReport = DailyReport(
         id = this.dailyReport.id,
@@ -24,14 +24,16 @@ data class DailyReportWithPhotos(
         activities = this.dailyReport.activities,
         occurrences = this.dailyReport.occurrences,
         status = DailyReportStatus.valueOf(this.dailyReport.status),
-        photos = this.photos.map { it.toDomain() }
+        medias = this.medias.map { it.toDomain() }
     )
 
     companion object {
-        fun fromDomain(dailyReport: DailyReport): DailyReportWithPhotos = DailyReportWithPhotos(
-            dailyReport = DailyReportEntity.fromDomain(dailyReport),
-            photos = dailyReport.photos.map { PhotoEntity.fromDomain(it).apply { reportId = dailyReport.id } }
-        )
+        fun fromDomain(dailyReport: DailyReport): DailyReportWithPhotos {
+            val dailyReportEntity = DailyReportEntity.fromDomain(dailyReport)
+            val mediasEntities = dailyReport.medias.map { MediaEntity.fromDomain(it, dailyReportEntity.id) }
+            return DailyReportWithPhotos(dailyReportEntity, mediasEntities)
+        }
+
     }
 
 }

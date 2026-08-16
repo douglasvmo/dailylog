@@ -4,6 +4,4 @@ sealed interface DailyReportListIntent {
 
     data object LoadList: DailyReportListIntent
 
-    data object ToggleCreateReportModal: DailyReportListIntent
-
 }

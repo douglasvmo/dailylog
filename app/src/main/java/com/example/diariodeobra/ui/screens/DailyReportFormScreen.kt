@@ -25,17 +25,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.diariodeobra.dailylog.DailyLogIntent
-import com.example.diariodeobra.dailylog.DailyLogState
+import com.example.diariodeobra.dailylog.DailyReportFormIntent
+import com.example.diariodeobra.dailylog.DailyReportFormState
 import com.example.diariodeobra.domain.model.Climate
-import com.example.diariodeobra.domain.model.Photo
+import com.example.diariodeobra.domain.model.MediaFile
+import com.example.diariodeobra.ui.components.DailyReportEditBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DailyLogScreen(
-    state: DailyLogState,
-    onIntent: (DailyLogIntent) -> Unit
+fun DailyReportFormScreen(
+    state: DailyReportFormState,
+    onIntent: (DailyReportFormIntent) -> Unit
 ) {
+
+    if(state.bottomSheetType != DailyReportFormState.BottomSheetType.NONE){
+        DailyReportEditBottomSheet(
+            state = state,
+            onIntent = onIntent
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,7 +54,7 @@ fun DailyLogScreen(
         bottomBar = {
             DailyLogBottomBar(
                 enabled = state.isValid,
-                onFinish = { onIntent(DailyLogIntent.Finalize) }
+                onFinish = { onIntent(DailyReportFormIntent.Finalize) }
             )
         }
     ) { padding ->
@@ -67,9 +76,7 @@ fun DailyLogScreen(
                 item {
                     ClimateCard(
                         climate = state.climate,
-                        onClick = {
-
-                        }
+                        onClick = {onIntent(DailyReportFormIntent.EditClimate)}
                     )
                 }
 
@@ -77,7 +84,7 @@ fun DailyLogScreen(
                     ActivitiesCard(
                         activities = state.activities,
                         onClick = {
-                            onIntent(DailyLogIntent.EditActivities)
+                            onIntent(DailyReportFormIntent.EditActivities)
                         }
                     )
                 }
@@ -86,16 +93,16 @@ fun DailyLogScreen(
                     OccurrencesCard(
                         occurrences = state.occurrences,
                         onClick = {
-                            onIntent(DailyLogIntent.EditOccurrences)
+                            onIntent(DailyReportFormIntent.EditOccurrences)
                         }
                     )
                 }
 
                 item {
                     PhotosCard(
-                        photos = state.photos,
+                        photos = state.medias,
                         onClick = {
-                            onIntent(DailyLogIntent.AddPhoto)
+                            onIntent(DailyReportFormIntent.EditMedia)
                         }
                     )
                 }
@@ -209,7 +216,7 @@ fun DailyLogBottomBar(
 
 @Composable
 fun PhotosCard(
-    photos: List<Photo>,
+    photos: List<MediaFile>,
     onClick: () -> Unit
 ) {
     SectionCard(
@@ -222,10 +229,10 @@ fun PhotosCard(
 
 @Preview
 @Composable
-fun DailyLogScreenPreview(){
+fun DailyReportFormScreenPreview(){
 
-    DailyLogScreen(
-        state = DailyLogState(),
+    DailyReportFormScreen(
+        state = DailyReportFormState(),
         onIntent = {}
 
     )

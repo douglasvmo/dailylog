@@ -7,7 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.example.diariodeobra.data.model.DailyReportEntity
 import com.example.diariodeobra.data.model.DailyReportWithPhotos
-import com.example.diariodeobra.data.model.PhotoEntity
+import com.example.diariodeobra.data.model.MediaEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,13 +21,17 @@ interface DailyReportDao {
     @Transaction
     @Query("SELECT * FROM daily_reports WHERE workId = :workId")
     fun getAllByWorkIdWithPhotos(workId: String): DailyReportWithPhotos
+
+    @Transaction
+    @Query("SELECT * FROM daily_reports WHERE id = :id")
+    fun getReport(id: String): DailyReportWithPhotos?
     
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(dailyReport: DailyReportEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPhotos(photos: List<PhotoEntity>)
+    fun insertPhotos(photos: List<MediaEntity>)
 
-
-
+    @Query("DELETE FROM medias WHERE reportId = :reportId")
+    fun deletePhotosByReportId(reportId: String)
 }

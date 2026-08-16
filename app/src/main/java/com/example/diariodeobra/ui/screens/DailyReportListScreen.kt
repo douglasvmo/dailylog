@@ -1,4 +1,4 @@
-package com.example.diariodeobra.dailyreportlist
+package com.example.diariodeobra.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,10 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.diariodeobra.dailyreportlist.DailyReportListState
 import com.example.diariodeobra.domain.model.Climate
 import com.example.diariodeobra.domain.model.DailyReport
 import com.example.diariodeobra.domain.model.DailyReportStatus
-import com.example.diariodeobra.ui.components.CreateDailyReportBottomSheet
 import java.time.LocalDate
 
 @Composable
@@ -80,7 +80,7 @@ fun Preview() {
                     climate = Climate.CLOUDY,
                     activities = "Teste",
                     occurrences = "Teste",
-                    photos = emptyList(),
+                    medias = emptyList(),
                     workId = "",
                 ),
                 DailyReport(
@@ -91,7 +91,7 @@ fun Preview() {
                     climate = Climate.CLOUDY,
                     activities = "Teste",
                     occurrences = "Teste",
-                    photos = emptyList(),
+                    medias = emptyList(),
                     workId = "",
                 )
             )

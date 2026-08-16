@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface DailyReportRepository {
     fun  observeReports(): Flow<List<DailyReport>>
+    suspend fun getReport(id: String): DailyReport?
     suspend fun saveReport(report: DailyReport)
 }

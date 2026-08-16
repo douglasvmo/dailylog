@@ -1,17 +1,15 @@
 package com.example.diariodeobra.domain.model
 
-import android.R
 import java.time.LocalDate
-import java.util.UUID
 
 data class DailyReport(
-    val id: String? = null,
+    val id: String?,
     var workId: String,
     var date: LocalDate,
     var climate: Climate?,
     var title: String,
     var activities: String,
     var occurrences: String?,
-    var photos: List<Photo>,
+    var medias: List<MediaFile>,
     var status: DailyReportStatus
 )

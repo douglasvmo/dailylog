@@ -11,11 +11,13 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.diariodeobra.dailylog.DailyLogState
+import com.example.diariodeobra.dailylog.DailyReportFormEffect
+import com.example.diariodeobra.dailylog.DailyReportFormIntent
+import com.example.diariodeobra.dailylog.DailyReportFormViewModel
 import com.example.diariodeobra.dailyreportlist.DailyReportListIntent
-import com.example.diariodeobra.ui.screens.DailyLogScreen
+import com.example.diariodeobra.ui.screens.DailyReportFormScreen
 import com.example.diariodeobra.ui.screens.LoginScreen
-import com.example.diariodeobra.dailyreportlist.DailyReportListScreen
+import com.example.diariodeobra.ui.screens.DailyReportListScreen
 import com.example.diariodeobra.ui.theme.DiarioDeObraTheme
 import com.example.diariodeobra.dailyreportlist.DailyReportListViewModel
 import com.example.diariodeobra.data.DatabaseProvider
@@ -28,6 +30,8 @@ class MainActivity : ComponentActivity() {
         val db = DatabaseProvider.getDatabase(this)
 
         val repository = DailyReportRoomRepository(db.dailyReportDao())
+        val dailyReportListViewModel = DailyReportListViewModel(repository)
+        val dailyReportFormViewModel = DailyReportFormViewModel(repository)
 
         setContent {
 
@@ -41,8 +45,6 @@ class MainActivity : ComponentActivity() {
                             })
                         }
                         composable("daily-reports") {
-                            val dailyReportListViewModel = DailyReportListViewModel(repository)
-
                             LaunchedEffect(Unit) {
                                 dailyReportListViewModel.dispath(DailyReportListIntent.LoadList)
                             }
@@ -52,24 +54,56 @@ class MainActivity : ComponentActivity() {
                             DailyReportListScreen(
                                 state,
                                 onNewReport = {
-                                    navController.navigate("new-daily-report")
+                                    navController.navigate("daily-report-new-one")
                                 },
                                 onReportSelected = { id ->
                                     navController.navigate("daily-reports/${id}")
                                 },
                             )
                         }
-                        composable("new-daily-report") {
-                            DailyLogScreen(
-                                state = DailyLogState(),
-                                onIntent = {}
+                        composable("daily-report-new-one") {
+                            val state by dailyReportFormViewModel.state.collectAsState()
+
+                            LaunchedEffect(Unit) {
+                                dailyReportFormViewModel.dispatch(DailyReportFormIntent.Reset)
+                            }
+
+                            DailyReportFormScreen(
+                                state = state,
+                                onIntent = { dailyReportFormViewModel.dispatch(it)}
                             )
+
+                            LaunchedEffect(Unit){
+                                dailyReportFormViewModel.effect.collect{
+                                    when(it){
+                                        DailyReportFormEffect.NavigateBack -> navController.popBackStack()
+                                    }
+                                }
+                            }
+
                         }
                         composable("daily-reports/{workId}") {
-                            DailyLogScreen(
-                                state = DailyLogState(),
-                                onIntent = {}
+                            val state by dailyReportFormViewModel.state.collectAsState()
+
+                            LaunchedEffect(Unit) {
+                                val workId = it.arguments?.getString("workId")
+                                if (workId != null) {
+                                    dailyReportFormViewModel.dispatch(DailyReportFormIntent.LoadDailyReport(workId))
+                                }
+                            }
+
+                            DailyReportFormScreen(
+                                state = state,
+                                onIntent = { dailyReportFormViewModel.dispatch(it) }
                             )
+
+                            LaunchedEffect(Unit){
+                                dailyReportFormViewModel.effect.collect{
+                                    when(it){
+                                        DailyReportFormEffect.NavigateBack -> navController.popBackStack()
+                                    }
+                                }
+                            }
                         }
 
                     }

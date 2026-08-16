@@ -7,6 +7,8 @@ import com.example.diariodeobra.domain.model.DailyReport
 import com.example.diariodeobra.domain.model.DailyReportStatus
 import java.time.LocalDate
 import java.util.UUID
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 @Entity(tableName = "daily_reports")
 data class DailyReportEntity (
@@ -30,12 +32,15 @@ data class DailyReportEntity (
         activities = this.activities,
         occurrences = this.occurrences,
         status = DailyReportStatus.valueOf(this.status),
-        photos = emptyList()
+        medias = emptyList()
     )
 
     companion object {
+
+
+        @OptIn(ExperimentalUuidApi::class)
         fun fromDomain(dailyReport: DailyReport): DailyReportEntity = DailyReportEntity(
-            id = dailyReport.id ?: UUID.randomUUID().toString(),
+            id = dailyReport.id ?: Uuid.generateV7().toString(),
             workId = dailyReport.workId,
             date = dailyReport.date,
             climate = dailyReport.climate!!,
